@@ -150,6 +150,28 @@ footer {
     flex-direction: column;
   }
 }
+  .priority {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0 8px;
+}
+
+.priority.alta {
+  background: #5c2020;
+  color: #ff7777;
+}
+
+.priority.media {
+  background: #5c4a18;
+  color: #ffd45c;
+}
+
+.priority.baja {
+  background: #204b2b;
+  color: #7ee795;
+}
 </style>
 </head>
 
@@ -167,6 +189,11 @@ footer {
     <input id="taskInput" type="text"
       placeholder="Escribí una nueva tarea..."
       maxlength="120">
+    <select id="taskPriority">
+  <option value="Baja">Prioridad baja</option>
+  <option value="Media" selected>Prioridad media</option>
+  <option value="Alta">Prioridad alta</option>
+    </select>
     <button onclick="addTask()">Agregar</button>
   </div>
 
@@ -196,14 +223,15 @@ function saveTasks() {
 function addTask() {
   const input = document.getElementById("taskInput");
   const title = input.value.trim();
-
+const priority = document.getElementById("taskPriority").value;
   if (!title) return;
 
   tasks.push({
-    id: Date.now(),
-    title: title,
-    done: false
-  });
+  id: Date.now(),
+  title: title,
+  priority: priority,
+  done: false
+});
 
   input.value = "";
   saveTasks();
@@ -262,13 +290,15 @@ function renderTasks() {
 
     const title = document.createElement("span");
     title.textContent = task.title;
-
+const priority = document.createElement("span");
+priority.className = "priority " + (task.priority || "Media").toLowerCase();
+priority.textContent = task.priority || "Media";
     const remove = document.createElement("button");
     remove.className = "delete";
     remove.textContent = "Eliminar";
     remove.addEventListener("click", () => deleteTask(task.id));
 
-    item.append(checkbox, title, remove);
+    item.append(checkbox, title, priority, remove);
     list.appendChild(item);
   });
 }
